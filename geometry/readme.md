@@ -1,34 +1,24 @@
-## Geometry
+# Geometry
 
-<<<<<<< Updated upstream
-> The branch of mathematics that studies the size, shapes, positions and dimensions of things. 
-=======
-Geometry was one of the few STEM classes that I enjoyed and did pretty well in. 
+The branch of mathematics that studies the size, shapes, positions and dimensions of things.
 
-# Objective
+## Objective
 
 * Learn the basics of processing, p5.js and other canvas-oriented 2D Javascript libraries.
-
-## Points
->>>>>>> Stashed changes
 
 ### Points
 
 A *point* is a precise position in space, typically marked by a small cross 'x' or a small dot '.' A point has no size, but has a position. This means it has no volume, area or length.
 
-<<<<<<< Updated upstream
 * [1](https://hiiambradkim.github.io/geometry/points/1) | [2](https://hiiambradkim.github.io/geometry/points/2) | [3](https://hiiambradkim.github.io/geometry/points/3) | [4](https://hiiambradkim.github.io/geometry/points/4) | [5](https://hiiambradkim.github.io/geometry/points/5) | [6](https://hiiambradkim.github.io/geometry/points/6) | [7](https://hiiambradkim.github.io/geometry/points/7) | [8](https://hiiambradkim.github.io/geometry/points/8) | [9](https://hiiambradkim.github.io/geometry/points/9) | [10](https://hiiambradkim.github.io/geometry/points/10) | [11](https://hiiambradkim.github.io/geometry/points/11) |
 
 ### Lines
-=======
-## Lines
->>>>>>> Stashed changes
 
 A *line* is a straight or curved continuous extent of length without breadth. A line has length but no width. A line is a type of geometric figure. A line is made up of an endless number of points.
 
 * [1](https://hiiambradkim.github.io/geometry/lines/1) | [2](https://hiiambradkim.github.io/geometry/lines/2) | [3](https://hiiambradkim.github.io/geometry/lines/3) | [4](https://hiiambradkim.github.io/geometry/lines/4) | [5](https://hiiambradkim.github.io/geometry/lines/5) | [6](https://hiiambradkim.github.io/geometry/lines/6) | [7](https://hiiambradkim.github.io/geometry/lines/7) | [8](https://hiiambradkim.github.io/geometry/lines/8) | [9](https://hiiambradkim.github.io/geometry/lines/9) | [10](https://hiiambradkim.github.io/geometry/lines/10) | [11](https://hiiambradkim.github.io/geometry/lines/11) | [12](https://hiiambradkim.github.io/geometry/lines/12) | [13](https://hiiambradkim.github.io/geometry/lines/13)
 
-## Planes
+### Planes
 
 A *plane* is a flat, two-dimensional surface that extends infinitely far. A plane is the two-dimensional analogue of a point (zero dimensions), a line (one dimension) and three-dimensional space.
 
@@ -39,16 +29,8 @@ A *plane* is a flat, two-dimensional surface that extends infinitely far. A plan
 Coming soon.
 
 ## Notes
-<<<<<<< Updated upstream
 
 * For attribution/citation of authorship, refer to [wiki/authorship](https://github.com/hiiambradkim/sketches/wiki/authors).
-=======
-e
-See [wiki/concepts](https://github.com/hiiambradkim/sketches/wiki/Concepts) for notes and more info. 
->>>>>>> Stashed changes
-
-* For my annottions on key concepts, check out [wiki/concepts](https://github.com/hiiambradkim/sketches/wiki/Concepts).
-
 * For the list of all external resources used in this collection, see [wiki/libraries](https://github.com/hiiambradkim/sketches/wiki/Libraries).
 
 ## Libraries
@@ -62,7 +44,6 @@ See [wiki/concepts](https://github.com/hiiambradkim/sketches/wiki/Concepts) for 
 * particles.js
 * three.js
 * webgl
-<<<<<<< Updated upstream
 =======
 
 ## Readings
@@ -73,4 +54,3 @@ See [wiki/concepts](https://github.com/hiiambradkim/sketches/wiki/Concepts) for 
 ## Attribution
 
 Coming soon.
->>>>>>> Stashed changes
