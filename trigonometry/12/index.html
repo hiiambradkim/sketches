@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>Pi Visualisation</title>
+  <link rel="stylesheet" href="https://use.typekit.net/bgw2gie.css">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<canvas id="c"></canvas>
+	<h1>Pi visualisation</h1>
+	<p>This diagram represents the first 1500 digits of pi. The digits are represented as a path traced by links between successive digits.</p>
+	<p>Each digit is assigned a segment around the circle. The "14" in "3.14..." is drawn as a link between <span class="segment1">segment 1</span> and <span class="segment4">segment 4</span>.</p>
+	<p>The position of the link on a digit's segment is associated with the position of pi. For example, the "14" link associated with the 2nd digit (1) and the 3rd digit (4) is drawn from position 2 on <span class="segment1">segment 1</span> to position 3 on <span class="segment4">segment 4</span>.</p>
+<!-- partial -->
+  <script  src="./script.js"></script>
+
+</body>
+</html>

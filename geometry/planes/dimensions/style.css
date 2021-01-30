@@ -1,0 +1,132 @@
+* {
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background: #333;
+  color: #eee;
+  overflow: auto;
+}
+body a {
+  color: #eee;
+}
+
+.center {
+  margin: auto;
+  padding: 2rem;
+  width: 1200px;
+  max-width: 100%;
+  min-height: 100%;
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+          align-items: center;
+}
+.center main {
+  width: 100%;
+}
+.center main h1 {
+  margin: 0;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #666;
+  font-weight: normal;
+  font-size: 1rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+.center main .render {
+  margin-bottom: 1rem;
+}
+.center main .render canvas {
+  max-width: 100%;
+  margin: 0 auto;
+  display: block;
+}
+.center main .render .info {
+  margin-top: 1rem;
+}
+.center main .render .info p {
+  text-align: center;
+  margin: 0;
+}
+.center main .render .info p#name {
+  font-size: 2rem;
+}
+.center main .render .info p#info {
+  font-size: 1rem;
+  color: #aaa;
+}
+.center main .controls .row {
+  margin-bottom: 1rem;
+}
+.center main .controls span small {
+  display: block;
+  color: #aaa;
+  font-size: 0.7em;
+}
+.center main .controls form {
+  margin: 0;
+  width: 100%;
+}
+.center main .controls form input[type='number'] {
+  width: 100%;
+  margin: 0;
+  margin-top: 0.5rem;
+  padding: 0;
+  padding-bottom: 0.4rem;
+  border: none;
+  border-bottom: 1px solid #666;
+  background: transparent;
+  color: #eee;
+  font-size: 1rem;
+  cursor: n-resize;
+}
+.center main .controls form input[type='checkbox'] {
+  display: none;
+}
+.center main .controls form input[type='checkbox'] + label {
+  display: inline-block;
+  color: #666;
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+.center main .controls form input[type='checkbox']:checked + label {
+  color: #eee;
+}
+.center main .controls form#isometric input[type='checkbox'] + label::after {
+  content: "Nope";
+}
+.center main .controls form#isometric input[type='checkbox']:checked + label::after {
+  content: "Yup";
+}
+
+.row {
+  width: 100%;
+  margin: auto;
+  display: -webkit-box;
+  display: flex;
+  flex-wrap: wrap;
+  -webkit-box-align: top;
+          align-items: top;
+  justify-content: space-around;
+}
+.row > * {
+  -webkit-box-flex: 0;
+          flex: 0 1 400px;
+  display: inline-block;
+}

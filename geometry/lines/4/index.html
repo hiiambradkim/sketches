@@ -1,0 +1,47 @@
+﻿<html>
+  <head>
+<title>L4</title>
+<script src="https://unpkg.com/pts/dist/pts.min.js"></script>
+<style>
+  body {font-family: sans-serif; margin: 0; overflow: hidden;}
+  div#pt{width:100%; height:100%;}
+</style>
+</head>
+<body>
+<div id="pt"></div>
+<script>
+
+// Source code licensed under Apache License 2.0. 
+// Copyright © 2017 William Ngan. (https://github.com/williamngan/pts)
+
+window.demoDescription = "Perpendicular demo in Op guide.";
+
+//// Demo code starts (anonymous function wrapper is optional) ---
+
+(function() {
+  
+  let run = Pts.quickStart( "#pt", "#000000" );
+  let pts;
+
+  run( (time, ftime)  => {
+    // would be better to init this in player's `start` function, but we are lazy here.
+    if (!pts) pts = Create.distributeRandom( space.innerBound, 100 );
+
+    let path = [new Pt(), space.pointer];    
+    let perpends = pts.map( (p) => [p, Line.perpendicularFromPt( path, p )] );
+
+    form.strokeOnly("#fff", 5).line( path );
+    form.strokeOnly("#555", 1).lines( perpends );
+    form.fillOnly("#bbb").points( pts, 2, "circle" );
+  });
+
+  //// ----  
+
+  space.bindMouse().bindTouch().play();
+
+})();
+
+
+    </script>
+  </body>
+</html>

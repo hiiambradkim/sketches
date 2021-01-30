@@ -1,0 +1,24 @@
+body {
+  margin: 0;
+  background: #000;
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+}
+
+div {
+  outline: 1px solid black;
+  margin: auto;
+  position: relative;
+  font-size: 0;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+canvas:first-child {
+  position: relative;
+}

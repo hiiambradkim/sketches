@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>T5: Interactive Trigonometry Graphics</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="Interactive Math Graphics">
+    <meta name="keywords" content="HTML,Math,JavaScript,Graphic,Canvas,requestAnimationFrame">
+    <meta name="author" content="Nacho Lozano">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/css/materialize.min.css'>
+    <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+    <!-- partial:index.partial.html -->
+    <header id="header" class="lighten-1 white-text center-align">
+        Interactive Trigonometry Graphics
+    </header>
+    <main class="container">
+        <!--Intro-->
+        <div id="intro" class="section">
+        </div>
+        <!--Canvas-->
+        <canvas id="canvas"></canvas>
+        <div class="row">
+            <!--Range input-->
+            <div class="col s12 m12">
+                <p class="range-field">
+                    <input type="range" id="angle" min="0" max="80" value="0" step="0.001">
+                </p>
+            </div>
+            <!--Buttons-->
+            <div class="col s12 m6">
+                <div class="section">
+                    <button class="waves-effect waves-light btn" id="animate">Animate</button>
+                    <button class="waves-effect waves-light btn" id="stop">Stop</button>
+                    <button class="waves-effect waves-light btn" id="restart">Restart graphics</button>
+                    <button class="waves-effect waves-light btn" id="random">?</button>
+                </div>
+            </div>
+            <!--Toggle grid-->
+            <div class="col s12 m6">
+                <div class="section">
+                    <input type="checkbox" class="filled-in" id="toggle-grid">
+                    <label for="toggle-grid">Toggle grid</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <!--Animation speed-->
+            <div class="col s12 m6">
+                <label>
+                    Animation speed ( It works with negative speed )
+                    <input id="speed" type="number">
+                </label>
+            </div>
+            <!--Zoom-->
+            <div class="col s12 m6">
+                <label>
+                    Zoom
+                    <input id="zoom" type="number" step="1">
+                </label>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col m12 s12">
+                <a class="btn btn-floating tooltipped waves-effect waves-light" data-position="right" data-delay="50" data-tooltip="Can't uncheck all graphics. Click each row to highlight the graphic.">
+                    <i class="material-icons">info_outline</i>
+                </a>
+            </div>
+        </div>
+        <div id="list">
+        </div>
+    </main>
+    <!--Footer-->
+    <footer class="page-footer teal lighten-1">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12"></div>
+                <div class="col l4 offset-l2 s12">
+                    <ul>
+                        <li><a class="grey-text text-lighten-3" href="http://materializecss.com/">MaterializeCSS Framework</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+                2017
+                <span class="grey-text text-lighten-4 right">Made by nacholozano</span>
+            </div>
+        </div>
+    </footer>
+    <!-- partial -->
+    <script src='https://code.jquery.com/jquery-3.1.1.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.8/js/materialize.min.js'></script>
+    <script src="./script.js"></script>
+</body>
+
+</html>

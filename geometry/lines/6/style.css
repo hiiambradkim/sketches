@@ -1,0 +1,26 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+body {
+    overflow: hidden;
+    background-color: #000;
+}
+
+
+.panel {
+    font-size: 18px;
+    background: rgba(0,0,0,.618);
+    border-radius: 0.33rem;
+    position: absolute;
+    top: 1%;
+    width: auto;
+    color: #fff;
+    opacity: 100%;
+    z-index: 1;
+    margin: 2rem;
+    padding: 1rem;
+}
