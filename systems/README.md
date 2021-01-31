@@ -16,5 +16,4 @@
 
 Note: all of these examples are forks of demos and showcases created by others on github and codepen. 
 
-w.i.p
 
