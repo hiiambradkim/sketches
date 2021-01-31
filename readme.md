@@ -1,13 +1,14 @@
 # Sketchbook
 
-This is a collection of doodles i forked from the internets in 2020.
+This is a collection of doodles I've scrapbooked and forked in 2020. My "sketchbook" began as a way to teach myself Javascript by poking at the source codes of interesting works I found on Github, Codepen and other creative coding communities.
 
-## directory
+## Directory
 
-### [geometry](https://hiiambradkim.github.io/sketchbook/geometry)
-### [trigonometry](https://hiiambradkim.github.io/sketchbook/trigonometry)
-### [noises](https://hiiambradkim.github.io/sketchbook/noises)
-### [progen](https://hiiambradkim.github.io/sketchbook/progen)
-### [systems](https://hiiambradkim.github.io/sketchbook/systems)
-### [sims](https://hiiambradkim.github.io/sketchbook/sims)
-### [crystals](https://hiiambradkim.github.io/sketchbook/crystals)
+* [Geometry](https://hiiambradkim.github.io/sketchbook/geometry) 
+* [Trigonometry](https://hiiambradkim.github.io/sketchbook/trigonometry)
+* [Noises](https://hiiambradkim.github.io/sketchbook/noises)
+* [Progen](https://hiiambradkim.github.io/sketchbook/progen)
+* [Systems](https://hiiambradkim.github.io/sketchbook/systems)
+* [Sims](https://hiiambradkim.github.io/sketchbook/sims)
+* [Crystals](https://hiiambradkim.github.io/sketchbook/crystals)
+

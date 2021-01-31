@@ -4,25 +4,23 @@
 
 # Objective
 
-* Learn the different types of procedural coherent noises and their application in computer graphic iagery. 
+Learn the different types of procedural coherent noises and their application in computer graphic iagery. 
+
+[1](https://hiiambradkim.github.io/sketchbook/noises/1) | [2](https://hiiambradkim.github.io/sketchbook/noises/2) | [3](https://hiiambradkim.github.io/sketchbook/noises/3) | [4](https://hiiambradkim.github.io/sketchbook/noises/4) | [5](https://hiiambradkim.github.io/sketchbook/noises/5) | [6](https://hiiambradkim.github.io/sketchbook/noises/6) | [7](https://hiiambradkim.github.io/sketchbook/noises/7) | [8](https://hiiambradkim.github.io/sketchbook/noises/8) | [9](https://hiiambradkim.github.io/sketchbook/noises/9) | [10](https://hiiambradkim.github.io/sketchbook/noises/10) | [11](https://hiiambradkim.github.io/sketchbook/noises/11)
 
 
+## Readings
 
-* [1](https://hiiambradkim.github.io/noises/1)
-* [2](https://hiiambradkim.github.io/noises/2)
-* [3](https://hiiambradkim.github.io/noises/3)
-* [4](https://hiiambradkim.github.io/noises/4)
-* [5](https://hiiambradkim.github.io/noises/5)
-* [6](https://hiiambradkim.github.io/noises/6)
-* [7](https://hiiambradkim.github.io/noises/7)
-* [8](https://hiiambradkim.github.io/noises/8)
-* [9](https://hiiambradkim.github.io/noises/9)
-* [10](https://hiiambradkim.github.io/noises/10)
-* [11](https://hiiambradkim.github.io/noises/11)
+* [Randomness](https://en.wikipedia.org/wiki/Randomness)
+* [Simulation noise](https://en.wikipedia.org/wiki/Simulation_noise)
+* [Gradient noise](https://en.wikipedia.org/wiki/Gradient_noise)
+* [Simplex noise](https://en.wikipedia.org/wiki/Simplex_noise)
+* [Perlin noise](https://en.wikipedia.org/wiki/Perlin_noise)
+* [Wavelet noise](https://en.wikipedia.org/wiki/Wavelet_noise)
+* [Value noise](https://en.wikipedia.org/wiki/Value_noise)
+* [Wavelet noise](https://en.wikipedia.org/wiki/Wavelet_noise)
+* [Worley noise](https://en.wikipedia.org/wiki/Worley_noise)
+* [Fractal noise](https://en.wikipedia.org/wiki/Fractal_noise)
+* [Procedural texture](https://en.wikipedia.org/wiki/Procedural_texture)
 
 
-
-Diamond-square Algorithm: https://en.wikipedia.org/wiki/Diamond-square_algorithm
-https://en.wikipedia.org/wiki/Simulation_noise
-https://en.wikipedia.org/wiki/Procedural_texture
-https://en.wikipedia.org/wiki/Randomness
