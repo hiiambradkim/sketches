@@ -1,0 +1,64 @@
+html {
+  height: 100%;
+}
+
+body {
+  background: #000 fixed radial-gradient(transparent, rgba(255, 255, 255, 0.2));
+  color: #fff;
+  text-align: center;
+  font-family: monospace;
+  width:100%;
+  height: 100%;
+}
+
+h1 {
+  color: white;
+}
+
+
+#container {
+	width:1600px;
+	height:900px;
+	overflow: hidden;
+	
+}
+/*Dynamic System Colors*/
+
+/** Light **/
+
+
+#8e8e8e
+#aeaeb2
+#c7c7cc
+#d1d1d6
+#e5e5ea
+#f2f2f7
+
+/** Light+ **/
+
+Gray1: #6c6c70
+Gray2: #8e8e93
+Gray3: #aeaeb2
+Gray4: #bcbcc0
+Gray5: #d8d8dc
+Gray6: #ebebf0
+
+
+/** Dark **/
+
+Gray1: #8e8e93
+Gray2: #636366
+Gray3: #48484a
+Gray4: #3a3a3c
+Gray5: #2c2c2e
+Gray6: #1c1c1e
+
+
+/** Dark+ **/
+
+Gray1: #aeaeb2
+Gray2: #7c7c80
+Gray3: #545456
+Gray4: #444446
+Gray5: #363638
+Gray6: #242426

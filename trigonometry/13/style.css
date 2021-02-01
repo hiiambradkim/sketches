@@ -1,0 +1,11 @@
+html {
+  height: 100%;
+}
+
+body {
+  background: #000 fixed radial-gradient(transparent, rgba(255, 255, 255, 0.2));
+  color: #fff;
+  text-align: center;
+  font-family: monospace;
+  height: 100%;
+}

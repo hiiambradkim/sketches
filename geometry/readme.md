@@ -4,7 +4,7 @@ The branch of mathematics that studies the size, shapes, positions and dimension
 
 ## Objective
 
-* Learn the basics of processing, p5.js and other canvas-oriented 2D Javascript libraries.
+Learn the basics of processing, p5.js and other canvas-oriented 2D Javascript libraries.
 
 ### Points
 
@@ -30,8 +30,8 @@ Coming soon.
 
 ## Notes
 
-* For attribution/citation of authorship, refer to [wiki/authorship](https://github.com/hiiambradkim/sketchbook/wiki/authors).
-* For the list of all external resources used in this collection, see [wiki/libraries](https://github.com/hiiambradkim/sketchbook/wiki/Libraries).
+For attribution/citation of authorship, refer to [wiki/authorship](https://github.com/hiiambradkim/sketchbook/wiki/authors).
+For the list of all external resources used in this collection, see [wiki/libraries](https://github.com/hiiambradkim/sketchbook/wiki/Libraries).
 
 ## Libraries
 
@@ -42,7 +42,6 @@ Coming soon.
 * [pts.js](https://github.com/williamngan/pts)
 * [p5.js](https://github.com/processing/p5.js)
 * [three.js](https://github.com/mrdoob/three.js)
-=======
 
 ## Readings
 
@@ -50,20 +49,20 @@ Coming soon.
 * [The Elements, Euclid](https://en.wikipedia.org/wiki/Euclid%27s_Elements)
 * [Byrne's Euclid](https://www.c82.net/euclid/)
 
-=======
+
 
 ## Attribution
 
-* Ge1doot: [1](http://codepen.io/ge1doot/details/ZLwbpQ) | [2](https://codepen.io/ge1doot/pen/dvMXOM) | [3](https://codepen.io/ge1doot/pen/dvMXOM) | [4](https://codepen.io/ge1doot/pen/gPgWvX) | [5](https://codepen.io/ge1doot/pen/JLbWgR) | [6](https://codepen.io/ge1doot/pen/JLbWgR) | [7](https://codepen.io/ge1doot/pen/mWVRWB) | [8](https://codepen.io/ge1doot/pen/mWVRWB) | [9](https://codepen.io/ge1doot/pen/NdebMe) | [10](https://codepen.io/ge1doot/pen/qoaryR) | [11](https://codepen.io/ge1doot/pen/vEVxop) | [12](https://codepen.io/ge1doot/pen/vOYOVz) | [13](https://codepen.io/ge1doot/pen/vOYOVz) | [14](https://codepen.io/ge1doot/pen/xMovWW)
+Ge1doot: | [1](http://codepen.io/ge1doot/details/ZLwbpQ) | [2](https://codepen.io/ge1doot/pen/dvMXOM) | [3](https://codepen.io/ge1doot/pen/dvMXOM) | [4](https://codepen.io/ge1doot/pen/gPgWvX) | [5](https://codepen.io/ge1doot/pen/JLbWgR) | [6](https://codepen.io/ge1doot/pen/JLbWgR) | [7](https://codepen.io/ge1doot/pen/mWVRWB) | [8](https://codepen.io/ge1doot/pen/mWVRWB) | [9](https://codepen.io/ge1doot/pen/NdebMe) | [10](https://codepen.io/ge1doot/pen/qoaryR) | [11](https://codepen.io/ge1doot/pen/vEVxop) | [12](https://codepen.io/ge1doot/pen/vOYOVz) | [13](https://codepen.io/ge1doot/pen/vOYOVz) | [14](https://codepen.io/ge1doot/pen/xMovWW)
 
-* DonKarlssonSan: [1](http://codepen.io/DonKarlssonSan/pen/XmygjK) | [2](https://codepen.io/DonKarlssonSan/pen/meQOvp) | [3](https://codepen.io/DonKarlssonSan/pen/zZLwob)
+DonKarlssonSan: | [1](http://codepen.io/DonKarlssonSan/pen/XmygjK) | [2](https://codepen.io/DonKarlssonSan/pen/meQOvp) | [3](https://codepen.io/DonKarlssonSan/pen/zZLwob)
 
-* KilledByAPixel: [1](https://codepen.io/KilledByAPixel/pen/GRpJEzO) | [2](https://codepen.io/KilledByAPixel/pen/GRpJEzO)
+KilledByAPixel: | [1](https://codepen.io/KilledByAPixel/pen/GRpJEzO) | [2](https://codepen.io/KilledByAPixel/pen/GRpJEzO)
 
-* Ninivert: [1](https://codepen.io/ninivert/pen/qMZdqN) | [2](https://codepen.io/ninivert/pen/qMZdqN)
+Ninivert: | [1](https://codepen.io/ninivert/pen/qMZdqN) | [2](https://codepen.io/ninivert/pen/qMZdqN)
 
-* Roboshoes: [1](https://codepen.io/roboshoes/pen/CbEjG) | [2](https://codepen.io/roboshoes/pen/CbEjG) | [3](https://codepen.io/roboshoes/pen/CbEjG)
+Roboshoes: | [1](https://codepen.io/roboshoes/pen/CbEjG) | [2](https://codepen.io/roboshoes/pen/CbEjG) | [3](https://codepen.io/roboshoes/pen/CbEjG)
 
-* [Guigui](https://contextfreeart.org/gallery2/index.html#design/688)
+[Guigui](https://contextfreeart.org/gallery2/index.html#design/688)
 
-* [XpoPen](https://contextfreeart.org/gallery/view.php?id=713)
+[XpoPen](https://contextfreeart.org/gallery/view.php?id=713)
