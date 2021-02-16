@@ -1,199 +1,276 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>P9: Elastic Node</title>
-    <script src="../../libraries/p5/p5.min.js" type="text/javascript"></script>
-    <script src="../../libraries/generative-design-library/generative-design-library.js" type="text/javascript"></script>
-    <style>
-      body, html {
-        background: #000;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        text-align:center;
-        overflow: hidden;
-      }
-      canvas {
-        padding: 4rem;
-      }
-    </style>
-  </head>
-  <body>
-  <script>
-/*basic setup*/
+<html lang="en" class="https://github.com/processing/p5.js/releases/download/0.5.6/p5.min.js">
+<head>
+  <meta charset="UTF-8">
+  <title>P10: Elastic Mesh</title>
+<style>
+* { margin:0; padding:0; } 
+html, body { width:100%; height:100%; } 
+canvas { display:block; filter:saturate(15%);}
+</style>
+</head>
+<body>
+<!-- partial:index.partial.html -->
 
-'use strict';
+<!-- partial -->
+<script src='https://github.com/processing/p5.js/releases/download/0.5.6/p5.min.js'></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js'></script>
+<script>
+	window.addEventListener('resize', resize, false);
 
-var sketch = function(p) {
+var cellSize = 50;
+var isometric = true;
+var connectCross = false; //only for non-isometric
 
-  var nodeA, nodeB;
-  var spring;
+//coefficient for the degredation in a particles velocity each tick
+//should stay between 0 and 1
+var friction = .04;
 
-  p.setup = function() {
-    p.createCanvas(p.windowWidth, p.windowHeight);
-    p.noStroke();
-    p.fill(0);
+//coefficient for the magnitude of the vector applied when the mesh is deformed
+//should stay between 0 and 1
+//TODO - determine the reason for strange behavior beyond .2
+var elasticity = .1; 
 
-    nodeA = new Node(p.width / 2 + p.random(-50, 50), p.height / 2 + p.random(-50, 50));
-    nodeB = new Node(p.width / 2 + p.random(-50, 50), p.height / 2 + p.random(-50, 50));
+//Coefficient for how deformed the grid is allowed to become
+var deformation = 0;
 
-    nodeA.damping = 0.1;
-    nodeB.damping = 0.1;
+function Point(i, j){
+  this.x = (random()*deformation + i)*cellSize;
+  this.y = (random()*deformation + j)*cellSize;
+  this.connections = [];
+  this.velocityX = 0;
+  this.velocityY = 0;
+}
 
-    spring = new Spring(nodeA, nodeB);
-    spring.length = 100;
-    spring.stiffness = 0.6;
-    spring.damping = 0.3;
-  };
+Point.prototype.tick = function(){
+  if(!(selectedPoint == undefined) && this.equals(selectedPoint)) return;
+  
+  for (var i = 0; i < this.connections.length; i++){
+    this.connections[i].applyVector(this);
+  }
+  
+  
+  
+  this.x += this.velocityX;
+  this.y += this.velocityY;
+  this.velocityX *= (1 - friction);
+  this.velocityY *= (1 - friction);
+  if (abs(this.velocityX) < 1) this.velocityX = 0;
+  if (abs(this.velocityY) < 1) this.velocityY = 0;
+  // if (this.x < 0) this.x = 0;
+  // if (this.y < 0) this.y = 0;
+  // if (this.x >= width) this.x = width-1;
+  // if (this.y >= height) this.y = height-1;
+}
 
-  p.draw = function() {
-    p.background(0);
+Point.prototype.render = function(){
+  ellipse(this.x, this.y, 10, 10);
+}
 
-    if (p.mouseIsPressed == true) {
-      nodeA.x = p.mouseX;
-      nodeA.y = p.mouseY;
+Point.prototype.equals = function(p){
+  if (p.x == undefined || p.y == undefined) return false;
+  return (this.x == p.x && this.y == p.y);
+}
+
+Point.prototype.hasConnection = function(p){
+  for (var i = 0; i < this.connections.length; i++){
+    var c = connections[i];
+    if (c.p1.equals(p)) return true;
+    if (c.p2.equals(p)) return true;
+  }
+  return false;
+}
+
+function Connection(p1, p2){
+  this.p1 = p1;
+  this.p2 = p2;
+  var xDiff = p1.x - p2.x;
+  var yDiff = p1.y - p2.y;
+  this.dist = dist(p1.x, p1.y, p2.x, p2.y);
+  this.goalDistance = this.dist;
+}
+
+Connection.prototype.tick = function(){
+  this.dist = dist(this.p1.x, this.p1.y, this.p2.x, this.p2.y);
+}
+
+Connection.prototype.render = function(){
+  stroke(180 - abs(this.dist - this.goalDistance), 100, 100);
+  line(this.p1.x, this.p1.y, this.p2.x, this.p2.y);
+  stroke(100);
+}
+
+Connection.prototype.applyVector = function(p){
+  // if (abs(this.dist - this.magnitude) < 5) return;
+  var magnitude = (this.dist - (this.goalDistance))*elasticity;
+  var angle = 0;
+  if (this.p1.equals(p)){
+    angle = atan2(this.p2.y - this.p1.y, this.p2.x - this.p1.x);
+  } else {
+    angle = atan2(this.p1.y - this.p2.y, this.p1.x - this.p2.x);
+  }
+  p.velocityX += cos(angle)*magnitude;
+  p.velocityY += sin(angle)*magnitude;
+  
+  //TODO see if a viable limited-depth recursion model exists
+  
+  // for (var i = 0; i < p.connections.length; i++){
+  //   var c = p.connections[i];
+  //   if (!c.p1.equals(p)){
+  //     c.p1.velocityX += cos(angle)*magnitude*.1;
+  //     c.p1.velocityY += sin(angle)*magnitude*.1;
+  //   }
+  //   if (!c.p2.equals(p)){
+  //     c.p2.velocityX += cos(angle)*magnitude*.1;
+  //     c.p2.velocityY += sin(angle)*magnitude*.1;
+  //   }
+  // }
+}
+
+var grid;
+var points;
+var connections;
+var gridWidth;
+var gridHeight;
+var selectedPoint = undefined;
+
+function setup(){
+  createCanvas();
+  ellipseMode(CENTER);
+  colorMode(HSB, 360, 100, 100);
+  resize();
+  
+  var gui = new dat.GUI();
+  gui.add(this, "friction", 0, 1);
+  gui.add(this, "elasticity", 0, 1);
+  
+  var f1 = gui.addFolder("Init Params");
+  f1.add(this, "cellSize", 20, 100);
+  f1.add(this, "deformation", 0, 2, .01);
+  f1.add(this, "isometric");
+  f1.add(this, "connectCross");
+  
+  gui.add(this, "recreate");
+  
+  
+  recreate();
+}
+
+function recreate(){
+  grid = [];
+  gridWidth = width/cellSize;
+  gridHeight = height/cellSize;
+  
+  points = [];
+  connections = [];
+  
+  for (var i = 0; i < gridWidth; i++){
+    grid.push([]);
+    for (var j = 0; j < gridHeight; j++){
+      var p;
+      if (isometric && j%2 == 0) p = new Point(i + 0.5, j);
+      else p = new Point(i, j);
+      grid[i].push(p);
+      points.push(p);
     }
+  }
+  
+  var ortho = [[0, -1],[0, 1],[1, 0],[-1, 0]];
+  var diag = [[-1, -1],[1, -1],[-1, 1],[1, 1]];
+  var iso1 = [[-1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]];
+  var iso2 = [[0, -1], [1, -1], [1, 0], [0, 1], [1, 1]];
+  
+  for (var i = 0; i < gridWidth; i++){
+    for (var j = 0; j < gridHeight; j++){
+      var p1 = grid[i][j];
+      if (isometric){
+        if (j%2 == 0){
+          connectPointList(iso2, i, j, p1);
+        } else {
+          connectPointList(iso1, i, j, p1);
+        }
+      } else {
+        if((i+j)%2 == 1 || connectCross){
+          connectPointList(diag, i, j, p1);
+        }
+        connectPointList(ortho, i, j , p1);
+      }
+      
+    }
+  }  
+}
 
-    // update spring
-    spring.update();
+function connectPointList(modList, i , j, p1){
+  for (var m = 0; m < 4; m++){
+    var mod = modList[m];
+    var k = i + mod[0];
+    var l = j + mod[1];
+    if (k >= 0 && k < gridWidth && l >= 0 && l < gridHeight){
+      var p2 = grid[k][l];
+      createConnection(p1, p2);
+    }
+  }
+}
 
-    // update node positions
-    nodeA.update();
-    nodeB.update();
+function createConnection(p1, p2){
+  if (!p1.hasConnection(p2)){
+    var c = new Connection(p1, p2);
+    p1.connections.push(c);
+    p2.connections.push(c);
+    connections.push(c);
+  }
+}
 
-    // draw spring
-    p.stroke(100, 100, 100);
-    p.strokeWeight(4);
-    p.line(nodeA.x, nodeA.y, nodeB.x, nodeB.y);
+function draw(){
+  background(0);
+  if (points == undefined) return;
+  
+  stroke(255);
+  fill(255);
+  
+  for (var i = 0; i < connections.length; i++){
+    connections[i].tick();
+  }
+  for (var i = 0; i < points.length; i++){
+    points[i].tick();
+  }
+  for (var i = 0; i < connections.length; i++){
+    connections[i].render();
+  }
+  for (var i = 0; i < points.length; i++){
+    points[i].render();
+  }
+}
 
-    // draw nodes
-    p.noStroke();
-    p.fill(250);
-    p.ellipse(nodeA.x, nodeA.y, 20, 20);
-    p.ellipse(nodeB.x, nodeB.y, 20, 20);
-  };
+function mousePressed(){
+  for (var i = 0; i < points.length; i++){
+    var p = points[i];
+    if (dist(p.x, p.y, mouseX, mouseY) < 10){
+      selectedPoint = p;
+      return;
+    }
+  }
+}
 
-};
+function mouseDragged(){
+  if (selectedPoint != undefined){
+    selectedPoint.x = mouseX;
+    selectedPoint.y = mouseY;
+  }
+}
 
-var myp5 = new p5(sketch);
+function mouseReleased(){
+  if (selectedPoint != undefined){
+    selectedPoint.velocityX = mouseX - pmouseX;
+    selectedPoint.velocityY = mouseY - pmouseY;
+    selectedPoint = undefined;
+  }
+}
 
+function resize(){
+  resizeCanvas(window.innerWidth, window.innerHeight);
+}
 </script>
-
-<script>
-  /*nodes configuration*/
-var Node = function(x, y, minX, maxX, minY, maxY) {
-  p5.Vector.call(this, x, y, 0);
-  this.minX = Number.MIN_VALUE || minX;
-  this.maxX = Number.MAX_VALUE || maxX;
-  this.minY = Number.MIN_VALUE || minY;
-  this.maxY = Number.MAX_VALUE || maxY;
-  this.radius = 200; // Radius of impact
-  this.ramp = 1; // Influences the shape of the function
-  this.strength = -1; // Strength: positive value attracts, negative value repels
-  this.damping = 0.5;
-  this.velocity = myp5.createVector();
-  this.pVelocity = myp5.createVector();
-  this.maxVelocity = 10;
-};
-
-Node.prototype = Object.create(p5.Vector.prototype);
-
-Node.prototype.attractNodes = function(nodeArray) {
-  for (var i = 0; i < nodeArray.length; i++) {
-    var otherNode = nodeArray[i];
-    // Stop when empty
-    if (otherNode === undefined) break;
-    // Continue from the top when node is itself
-    if (otherNode === this) continue;
-
-    this.attract(otherNode);
-  }
-};
-
-Node.prototype.attract = function(otherNode) {
-  var thisNodeVector = myp5.createVector(this.x, this.y);
-  var otherNodeVector = myp5.createVector(otherNode.x, otherNode.y);
-  var d = thisNodeVector.dist(otherNodeVector);
-
-  if (d > 0 && d < this.radius) {
-    var s = myp5.pow(d / this.radius, 1 / this.ramp);
-    var f = s * 9 * this.strength * (1 / (s + 1) + ((s - 3) / 4)) / d;
-    var df = thisNodeVector.sub(otherNodeVector);
-    df.mult(f);
-
-    otherNode.velocity.x += df.x;
-    otherNode.velocity.y += df.y;
-  }
-};
-
-Node.prototype.update = function() {
-  this.velocity.limit(this.maxVelocity);
-
-  this.x += this.velocity.x;
-  this.y += this.velocity.y;
-
-  if (this.x < this.minX) {
-    this.x = this.minX - (this.x - this.minX);
-    this.velocity.x = -this.velocity.x;
-  }
-  if (this.x > this.maxX) {
-    this.x = this.maxX - (this.x - this.maxX);
-    this.velocity.x = -this.velocity.x;
-  }
-
-  if (this.y < this.minY) {
-    this.y = this.minY - (this.y - this.minY);
-    this.velocity.y = -this.velocity.y;
-  }
-  if (this.y > this.maxY) {
-    this.y = this.maxY - (this.y - this.maxY);
-    this.velocity.y = -this.velocity.y;
-  }
-
-  this.velocity.mult(1 - this.damping);
-};
-
-Node.prototype.constructor = Node;
-
-
-</script>
-
-
-
-<script>
-  /*spring configuration*/
-
-var Spring = function(fromNode, toNode, length, stiffness, damping) {
-  this.fromNode = fromNode;
-  this.toNode = toNode;
-
-  this.length = length || 100;
-  this.stiffness = stiffness || 0.6;
-  this.damping = damping || 0.9;
-};
-
-// ------ apply forces on spring and attached nodes ------
-Spring.prototype.update = function() {
-  // calculate the target position
-  // target = normalize(to - from) * length + from
-
-  var diff = p5.Vector.sub(this.toNode, this.fromNode);
-  diff.normalize();
-  diff.mult(this.length);
-  var target = p5.Vector.add(this.fromNode, diff);
-
-  var force = p5.Vector.sub(target, this.toNode);
-  force.mult(0.5);
-  force.mult(this.stiffness);
-  force.mult(1 - this.damping);
-
-  this.toNode.velocity.add(force);
-  this.fromNode.velocity.add(p5.Vector.mult(force, -1));
-};
-
-</script>
-
 
 </body>
 </html>

@@ -1,8 +1,8 @@
 # Noises
 
+In computer graphics, *coherent noise* is a class of visual effects used to create smooth pseudorandomness in images and videos. Coherent noises are an integral component of procedural generation in video games and digital arts. This series explores the three most common types of coherent noises: 1) gradient noise, 2) value noise and 3) cellular noise. 
 
-
-# Objective
+## Objective
 
 Learn the different types of procedural coherent noises and their application in computer graphic iagery. 
 

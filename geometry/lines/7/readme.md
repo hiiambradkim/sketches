@@ -1,9 +1,9 @@
-# strong wind
+# Waves
 
-[source](https://codepen.io/ge1doot/pen/NdebMe).
+<<<<<<< HEAD
+A Pen created on CodePen.io. Original URL: [https://codepen.io/roboshoes/pen/CbEjG](https://codepen.io/roboshoes/pen/CbEjG).
+=======
+[source](https://codepen.io/roboshoes/pen/CbEjG).
+>>>>>>> main
 
-A life lived in summers, how many of them have I got left, Lord ... A strong wind suddenly changed the balmy air of the secluded beach into fall, one coated with leaves from nearby chestnut trees, leaves that flew in a cheerful dance all the way, as she approached the shore to test the water. 
-
-The violent north-west wind shattered the waves: she was far from weak. The embrace of water, still warm in the shore from the summer sun, surrounded her. (...)
-
-[strong wind II](http://codepen.io/ge1doot/details/ZLwbpQ/)
+This is a little canvas based exploration I've built about a year ago for a project. I decided to release it as pen. Hope you enjoy.

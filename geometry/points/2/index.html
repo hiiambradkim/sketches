@@ -2,20 +2,31 @@
   <head>
   <title>P2: Triangulation</title>
   <script src="https://unpkg.com/pts/dist/pts.min.js"></script>
+  <link rel="stylesheet" href="https://use.typekit.net/bgw2gie.css">
+  <meta name="viewport" content="initial-scale=1, maximum-scale=1">
   <style>
-      body, html {
-        background: #000;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        text-align:center;
-        overflow: hidden;
-      }
-      div#pt{width: 100%; height: 100%;}
+    html, body {
+font-family: "ibm-plex-sans", sans-serif;
+margin: auto;
+padding: 0;
+width: 100%;
+height: 100%;
+font-size: 16px;
+overflow: hidden;
+background: #000;
+color: #ffff;
+}
+div#summary {display: block; width: 20vw; position: relative; background:rgba(55,55,55,0.1); padding:1em; top:1%; left:1%;z-index: 1;}
+canvas {display: block;}
+div#pt{width: 100%; height: 100%;}
     </style>
   </head>
   <body>
+    
     <div id="pt"></div>
+<div id="summary">
+    <h2>P2: Triangulation</h2>
+    <p>A basic <a href="https://mathworld.wolfram.com/CubicLattice.html">cubic lattice</a> comprised of one thousand points. This may seem like an impossible object to our naked eyes, but it is commonly and widely used in chemistry, physics and other fields in science. Powered by Pts.js.</p></div>
     <script>
 
 (function() {
@@ -29,14 +40,13 @@
     let t = space.pointer;
     pts.sort( (a,b) => a.$subtract(t).magnitudeSq() - b.$subtract(t).magnitudeSq() );
     
-    form.fillOnly("#999", 1);
+    form.fillOnly("#555", 1);
     pts.forEach( (p, i) => form.point( p, 10 - 10*i/pts.length, "circle" ) )
-
     form.fillOnly("#000").points( pts, 2, "circle" );
 
     let three = pts.slice(0, 3);
     let threeLines = three.map( (p) => [p, space.pointer] );
-    form.strokeOnly("#fff", 2).lines( threeLines );
+    form.strokeOnly("#111", 2).lines( threeLines );
     form.fillOnly("#f8f8f8").points( three, 3, "circle" );
   });
 

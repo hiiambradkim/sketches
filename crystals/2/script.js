@@ -35,7 +35,7 @@ const crystalSize = 40;
 const colorMaterial = 'red'; // Purple
 const colorSpecular = 'yellow'; // Green
 
-const geometry = new THREE.BoxBufferGeometry(crystalSize, crystalSize, crystalSize);
+const geometry = new THREE.IcosahedronGeometry(crystalSize, crystalSize, crystalSize);
 const material = new THREE.MeshNormalMaterial(); // Maps the normal vectors to RGB colors
 
 const group = new THREE.Group();

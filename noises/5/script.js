@@ -2,7 +2,7 @@
 {
 	class Noise {
 		// http://mrl.nyu.edu/~perlin/noise/
-		constructor(octaves = 12) {
+		constructor(octaves = 24) {
 			this.p = new Uint8Array(256);
 			this.octaves = octaves;
 			this.init();
@@ -113,7 +113,7 @@
 						}
 						init();
 					},
-					false
+					true
 				);
 			});
 		}

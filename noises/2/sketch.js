@@ -1,20 +1,20 @@
 let sketch = function(p) {
   let THE_SEED;
 
-  let width = 120;
+  let width = 160;
   let resolution = 60;
 
   let noise_zoom = 90;
   let magnitude = 120;
   let plate_padding = 0;
 
-  let number_of_blocks = 120;
+  let number_of_blocks = 240;
   let blocks = [];
 
   let palette;
 
   p.setup = function() {
-    p.createCanvas(1200, 900);
+    p.createCanvas(innerHeight, innerHeight);
     p.noLoop();
 
     p.strokeWeight(1);

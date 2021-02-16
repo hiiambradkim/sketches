@@ -1,338 +1,297 @@
-/**
- * Ported from "Sketch of Voronoi"
- * http://alumican.net/#/c/cells
- * Dead Code Preservation: http://wa.zozuar.org/code.php?c=iNy0
- * Fortune's algorithm - Wikipedia, the free encyclopedia
- * @see http://en.wikipedia.org/wiki/Fortune's_algorithm
- * C++ reference https://www.cs.hmc.edu/~mbrubeck/voronoi.html
- */
-"use strict";
-{
-	const canvas = {
-		init() {
-			this.elem = document.querySelector("canvas");
-			this.resize();
-			window.addEventListener("resize", () => this.resize(), false);
-			return this.elem.getContext("2d", {lowLatency: true});
-		},
-		resize() {
-			this.width = this.elem.width = this.elem.offsetWidth;
-			this.height = this.elem.height = this.elem.offsetHeight;
-			pointer.mag = Math.min(this.width, this.height) * 0.05;
-		}
-	};
-	const pointer = {
-		x: 0.0,
-		y: 0.0,
-		ox: 0.0,
-		oy: 0.0,
-		mag: 0.0,
-		ms2: 0.0,
-		move(e, touch) {
-			e.preventDefault();
-			const pointer = touch ? e.targetTouches[0] : e;
-			this.x = pointer.clientX;
-			this.y = pointer.clientY;
-		},
-		save() {
-			const mvx = this.x - this.ox;
-			const mvy = this.y - this.oy;
-			this.ms2 = Math.sqrt(mvx * mvx + mvy * mvy);
-			this.ox = this.x;
-			this.oy = this.y;
-		},
-		init(canvas) {
-			canvas.elem.addEventListener("mousemove", e => this.move(e, false), false);
-			canvas.elem.addEventListener("touchmove", e => this.move(e, true), false);
-		}
-	};
-	const ctx = canvas.init();
-	pointer.init(canvas);
-	////////////////////////////////////////////////////
-	let seed = 1;
-	const random = _ => {
-		seed = (seed * 16807) % 2147483647;
-		return (seed - 1) / 2147483646;
-	};
-	class Point {
-		constructor() {
-			this.x = 0.0;
-			this.y = 0.0;
-			this.vx = 0.0;
-			this.vy = 0.0;
-		}
-		init() {
-			const angle = random() * 2 * Math.PI;
-			this.x = canvas.width * 0.5 + (random() - 0.5) * 10;
-			this.y = canvas.height * 0.5 + (random() - 0.5) * 10;
-			this.vx = 0.5 * Math.cos(angle);
-			this.vy = 0.5 * Math.sin(angle);
-		}
-		move() {
-			if (
-				this.x < 0 ||
-				this.x > canvas.width ||
-				this.y < 0 ||
-				this.y > canvas.height
-			) {
-				this.init();
-				return;
-			}
-			const dx = this.x - pointer.x;
-			const dy = this.y - pointer.y;
-			const dist2 = dx * dx + dy * dy;
-			const angle = Math.atan2(dy, dx);
-			const power = pointer.mag / dist2 * pointer.ms2;
-			this.vx += power * Math.cos(angle);
-			this.vy += power * Math.sin(angle);
-			this.x += this.vx;
-			this.y += this.vy;
-		}
-	}
-	class Arc {
-		constructor(p, prev, next) {
-			this.p     = p;
-			this.next  = next;
-			this.prev  = prev;
-			this.v0    = null;
-			this.v1    = null;
-			this.left  = null;
-			this.right = null;
-			this.endP  = null;
-			this.endX  = 0.0;
-		}
-	}
-	////////////////////////////////////////////////////
-	const N = 700;
-	const points = [];
-	// init
-	for (let i = 0; i < N; ++i) {
-		const p = new Point();
-		p.init();
-		points[i] = p;
-	}
-	const intersection = ( p0, p1, l, res) => {
-		let p = p0, ll = l * l;
-		if ( p0.x === p1.x ) res.y = ( p0.y + p1.y ) / 2;
-		else if ( p1.x === l ) res.y = p1.y;
-		else if ( p0.x === l ) {
-			res.y = p0.y;
-			p = p1;
-		} else {
-			const z0 = 0.5 / ( p0.x - l );
-			const z1 = 0.5 / ( p1.x - l );
-			const a = z0 - z1;
-			const b = -2 * ( p0.y * z0 - p1.y * z1 );
-			const c = ( p0.y * p0.y + p0.x * p0.x - ll ) * z0 - ( p1.y * p1.y + p1.x * p1.x - ll ) * z1;
-			res.y = ( - b - Math.sqrt ( b * b - 4 * a * c ) ) / ( 2 * a );
-		}
-		res.x = ( p.x * p.x + ( p.y - res.y ) * ( p.y - res.y ) - ll ) / ( 2 * p.x - 2 * l );
-		return res;
-	}
-	const fortune = () => {
-		let o = new Point();
-		let root = null;
-		let a = null;
-		let b = null;
-		let c = null;
-		let d = null;
-		let next = null;
-		let eventX = 0;
-		let w = points[0].x;
-		for (let i = 1; i < N; i++) {
-			const p = points[i];
-			const x = p.x;
-			if (x < w) {
-				let j = i;
-				while (j > 0 && points[j - 1].x > x) {
-					points[j] = points[j - 1];
-					j--;
-				}
-				points[j] = p;
-			} else w = x;
-		}
-		const x0 = points[0].x;
-		let i = 0;
-		let p = points[0];
-		let x = p.x;
-		for (;;) {
-			if (a !== null) {
-				let circle = false;
-				if (a.prev !== null && a.next !== null) {
-					const aa = a.prev.p;
-					const bb = a.p;
-					const cc = a.next.p;
-					let A = bb.x - aa.x;
-					let B = bb.y - aa.y;
-					const C = cc.x - aa.x;
-					const D = cc.y - aa.y;
-					if (A * D - C * B <= 0) {
-						const E = A * (aa.x + bb.x) + B * (aa.y + bb.y);
-						const F = C * (aa.x + cc.x) + D * (aa.y + cc.y);
-						const G = 2 * (A * (cc.y - bb.y) - B * (cc.x - bb.x));
-						if (G !== 0) {
-							o.x = (D * E - B * F) / G;
-							o.y = (A * F - C * E) / G;
-							A = aa.x - o.x;
-							B = aa.y - o.y;
-							eventX = o.x + Math.sqrt(A * A + B * B);
-							if (eventX >= w) circle = true;
-						}
-					}
-				}
-				if (a.right !== null) a.right.left = a.left;
-				if (a.left !== null) a.left.right = a.right;
-				if (a === next) next = a.right;
-				if (circle === true) {
-					a.endX = eventX;
-					if (a.endP !== null) {
-						a.endP.x = o.x;
-						a.endP.y = o.y;
-					} else {
-						a.endP = o;
-						o = new Point();
-					}
-					d = next;
-					if (d === null) {
-						next = a;
-					} else
-						for (;;) {
-							if (d.endX >= eventX) {
-								a.left = d.left;
-								if (d.left !== null) d.left.right = a;
-								if (next === d) next = a;
-								a.right = d;
-								d.left = a;
-								break;
-							}
-							if (d.right === null) {
-								d.right = a;
-								a.left = d;
-								a.right = null;
-								break;
-							}
-							d = d.right;
-						}
-				}
-				if (b !== null) {
-					a = b;
-					b = null;
-					continue;
-				}
-				if (c !== null) {
-					a = c;
-					c = null;
-					continue;
-				}
-				a = null;
-			}
-			if (next !== null && next.endX <= x) {
-				a = next;
-				next = a.right;
-				if (next !== null) next.left = null;
-				a.right = null;
-				if (a.prev !== null) {
-					a.prev.next = a.next;
-					a.prev.v1 = a.endP;
-				}
-				if (a.next !== null) {
-					a.next.prev = a.prev;
-					a.next.v0 = a.endP;
-				}
-				ctx.moveTo(a.v0.x, a.v0.y);
-				ctx.lineTo(a.endP.x, a.endP.y);
-				ctx.lineTo(a.v1.x, a.v1.y);
-				d = a;
-				w = a.endX;
-				if (a.prev !== null) {
-					b = a.prev;
-					a = a.next;
-				} else {
-					a = a.next;
-					b = null;
-				}
-			} else {
-				if (p === null) break;
-				if (root === null) {
-					root = new Arc(p, null, null);
-				} else {
-					let z = new Point();
-					a = root.next;
-					if (a !== null) {
-						while (a.next !== null) {
-							a = a.next;
-							if (a.p.y >= p.y) break;
-						}
-						intersection(a.prev.p, a.p, p.x, z);
-						if (z.y <= p.y) {
-							while (a.next !== null) {
-								a = a.next;
-								intersection(a.prev.p, a.p, p.x, z);
-								if (z.y >= p.y) {
-									a = a.prev;
-									break;
-								}
-							}
-						} else {
-							a = a.prev;
-							while (a.prev !== null) {
-								a = a.prev;
-								intersection(a.p, a.next.p, p.x, z);
-								if (z.y <= p.y) {
-									a = a.next;
-									break;
-								}
-							}
-						}
-					} else a = root;
-					if (a.next !== null) {
-						b = new Arc(a.p, a, a.next);
-						a.next.prev = b;
-						a.next = b;
-					} else {
-						b = new Arc(a.p, a, null);
-						a.next = b;
-					}
-					a.next.v1 = a.v1;
-					z.y = p.y;
-					z.x =
-						(a.p.x * a.p.x + (a.p.y - p.y) * (a.p.y - p.y) - p.x * p.x) /
-						(2 * a.p.x - 2 * p.x);
-					b = new Arc(p, a, a.next);
-					a.next.prev = b;
-					a.next = b;
-					a = a.next;
-					a.prev.v1 = z;
-					a.next.v0 = z;
-					a.v0 = z;
-					a.v1 = z;
-					b = a.next;
-					a = a.prev;
-					c = null;
-					w = p.x;
-				}
-				i++;
-				if (i >= N) {
-					p = null;
-					x = 999999;
-				} else {
-					p = points[i];
-					x = p.x;
-				}
-			}
-		}
-	};
-	//////////////////////////////////////////////////////
-	const run = () => {
-		requestAnimationFrame(run);
-		ctx.fillStyle = "#000";
-		ctx.strokeStyle = "#fff";
-		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		for (const point of points) point.move();
-		ctx.beginPath();
-		fortune();
-		ctx.stroke();
-		pointer.save();
-	};
-	run();
+/*
+  Johan Karlsson, 2020
+  https://twitter.com/DonKarlssonSan
+  MIT License, see Details View
+  
+  https://en.wikipedia.org/wiki/Delaunay_triangulation
+  
+  https://en.wikipedia.org/wiki/Bowyer%E2%80%93Watson_algorithm
+  
+  https://en.wikipedia.org/wiki/Circumscribed_circle
+*/
+
+class Triangle {
+  constructor(a, b, c) {
+    this.a = a;
+    this.b = b;
+    this.c = c;
+  }
+  
+  vertexes() {
+    return [this.a, this.b, this.c];
+  }
+  
+  edges() {
+    return [
+      [this.a, this.b],
+      [this.b, this.c],
+      [this.c, this.a]
+    ];
+  }
+  
+  sharesAVertexWith(triangle) {
+    // TODO: optimize me please!
+    for(let i = 0; i < 3; i++) {
+      for(let j = 0; j < 3; j++) {
+        let v = this.vertexes()[i];
+        let vv = triangle.vertexes()[j];
+        if(v.equals(vv)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  hasEdge(edge) {
+    for(let i = 0; i < 3; i++) {
+      let e = this.edges()[i];
+      if(e[0].equals(edge[0]) && e[1].equals(edge[1]) || 
+         e[1].equals(edge[0]) && e[0].equals(edge[1])) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  circumcenter() {
+    let d = 2 * (this.a.x * (this.b.y - this.c.y) + 
+                 this.b.x * (this.c.y - this.a.y) + 
+                 this.c.x * (this.a.y - this.b.y));
+    
+    let x = 1 / d * ((this.a.x * this.a.x + this.a.y * this.a.y) * (this.b.y - this.c.y) +
+                     (this.b.x * this.b.x + this.b.y * this.b.y) * (this.c.y - this.a.y) + 
+                     (this.c.x * this.c.x + this.c.y * this.c.y) * (this.a.y - this.b.y));
+    
+    let y = 1 / d * ((this.a.x * this.a.x + this.a.y * this.a.y) * (this.c.x - this.b.x) + 
+                     (this.b.x * this.b.x + this.b.y * this.b.y) * (this.a.x - this.c.x) + 
+                     (this.c.x * this.c.x + this.c.y * this.c.y) * (this.b.x - this.a.x));
+    
+    return new Vector(x, y);
+  }
+  
+  get centroid() {
+    if(!this._centroid) {
+      this._centroid = this.a.add(this.b).add(this.c).div(3);
+    }
+    return this._centroid;
+  }
+  
+  circumradius() {
+    return this.circumcenter().sub(this.a).getLength();    
+  }
+  
+  pointIsInsideCircumcircle(point) {
+    let circumcenter = this.circumcenter();
+    let circumradius = circumcenter.sub(this.a).getLength();
+    let dist = point.sub(circumcenter).getLength();
+    return dist < circumradius;
+  }
+  
+  draw() {
+    let c = this.centroid;
+    ctx.save();
+    let color = getColor(this.a, this.b)
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    
+    ctx.beginPath();
+    ctx.lineTo(this.a.x, this.a.y);
+    ctx.lineTo(this.b.x, this.b.y);
+    ctx.lineTo(this.c.x, this.c.y);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.clip();
+    
+    if(image) {
+      ctx.translate(c.x, c.y);
+      let angle = Math.random() * Math.PI * 2;
+      ctx.rotate(angle);
+      let leftMargin = -image.width / 2;
+      let topMargin = -image.height / 2;
+      ctx.globalAlpha = 0.2;
+      ctx.drawImage(image, leftMargin, topMargin); 
+    }
+    
+    ctx.restore();
+  }
 }
+
+let canvas;
+let ctx;
+let w, h;
+let simplex;
+let zoom;
+let image;
+
+function setup() {
+  canvas = document.querySelector("#canvas");
+  ctx = canvas.getContext("2d");
+  reset();
+  window.addEventListener("resize", () => {
+    reset();
+    draw();
+  });
+  canvas.addEventListener("click", draw);
+  loadImage().then(img => {
+    image = img;
+    draw();
+  });
+}
+
+function getColor(vec1, vec2) {
+  let n = (simplex.noise2D(vec1.x / zoom, vec1.y / zoom) + 1) * 0.5;
+  let c = 255 * n;
+  let c2 = (c + 128) % 255; 
+  
+  var gradient = ctx.createLinearGradient(vec1.x, vec1.y, vec2.x, vec2.y);
+  let color1= `rgb(${c}, ${c}, ${c})`;
+  let color2= `rgb(${c2}, ${c2}, ${c2})`;
+  
+  gradient.addColorStop(0, color1);
+  gradient.addColorStop(1, color2);
+
+  return gradient;
+}
+
+function loadImage() {
+  return new Promise((resolve, reject) => {
+    let image = new Image();
+    image.crossOrigin = "anonymous";
+    image.src = "https://s3-us-west-2.amazonaws.com/s.cdpn.io/254249/wall-2828302_1280.jpg";
+    image.onload = () => {
+      resolve(image);
+    };
+    image.onerror = error => {
+      reject(error.srcElement.src);
+    }
+  });
+}
+
+function reset() {
+  w = canvas.width = window.innerWidth;
+  h = canvas.height = window.innerHeight;
+}
+
+function getRandomPoints() {
+  let extra = 40;
+  let pointList = [
+    new Vector(-extra, -extra),
+    new Vector(-extra, h + extra),
+    new Vector(w + extra, -extra),
+    new Vector(w + extra, h + extra)
+  ];
+  
+  let rStep = Math.random() * 2.5 + 0.9;
+  let aStep = Math.random() + 0.1;
+  let r = 1;
+  let angle = 0;
+  let center = new Vector(w / 2, h / 2);
+  for(let i = 0; i < 700; i++) {
+    let d = Math.random() * 2 + 9;
+    let extraR = Math.sin(i/d) * 0.15 + 1;
+    let x = Math.cos(angle) * r * extraR;
+    let y = Math.sin(angle) * r * extraR;
+    let point = new Vector(x, y);
+    if(point.distanceTo(center) > w * 2) {
+      break;
+    }
+    pointList.push(point.add(center));
+    r += rStep;
+    angle += aStep;
+  }
+  return pointList;
+}
+
+function bowyerWatson (superTriangle, pointList) {
+  // pointList is a set of coordinates defining the 
+  // points to be triangulated
+  let triangulation = [];
+
+  // add super-triangle to triangulation 
+  // must be large enough to completely contain all 
+  // the points in pointList
+  triangulation.push(superTriangle);
+
+  // add all the points one at a time to the triangulation
+  pointList.forEach(point => {
+    let badTriangles = [];
+    
+    // first find all the triangles that are no 
+    // longer valid due to the insertion
+    triangulation.forEach(triangle => { 
+      if(triangle.pointIsInsideCircumcircle(point)) {
+        badTriangles.push(triangle); 
+      }
+    });
+    let polygon = [];
+    
+    // find the boundary of the polygonal hole
+    badTriangles.forEach(triangle => {
+      triangle.edges().forEach(edge => {
+        let edgeIsShared = false;
+        badTriangles.forEach(otherTriangle => {
+          if(triangle !== otherTriangle &&  otherTriangle.hasEdge(edge)) {
+            edgeIsShared = true;
+          }
+        });
+        if(!edgeIsShared) {
+          //edge is not shared by any other 
+          // triangles in badTriangles
+          polygon.push(edge);
+        }
+      });
+    });
+    
+    // remove them from the data structure
+    badTriangles.forEach(triangle => {
+      let index = triangulation.indexOf(triangle);
+      if (index > -1) {
+        triangulation.splice(index, 1);
+      }
+    });
+    
+    // re-triangulate the polygonal hole
+    polygon.forEach(edge => {
+      //form a triangle from edge to point
+      let newTri = new Triangle(edge[0], edge[1], point);
+      triangulation.push(newTri);
+    });
+  });
+  
+  // done inserting points, now clean up
+  let i = triangulation.length;
+  while(i--) {
+    let triangle = triangulation[i];
+    if(triangle.sharesAVertexWith(superTriangle)) {
+      //remove triangle from triangulation
+      let index = triangulation.indexOf(triangle);
+      if (index > -1) {
+        triangulation.splice(index, 1);
+      }
+    }  
+  }
+  
+  return triangulation;
+}
+
+function draw() {
+  simplex = new SimplexNoise();
+  zoom = Math.random() * 1000 + 400;
+  
+  ctx.fillStyle = "black";
+  ctx.fillRect(0, 0, w, h);
+  
+  let superTriangle = new Triangle(
+    new Vector(-w * 10, h * 10),
+    new Vector(w * 10, h * 10),
+    new Vector(w / 2, -h * 10)
+  );
+  
+  let pointList = getRandomPoints();
+  let triangles = bowyerWatson(superTriangle, pointList);
+  triangles.forEach(t => t.draw());
+}
+
+setup();

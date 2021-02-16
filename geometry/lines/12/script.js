@@ -1,92 +1,268 @@
-var sky = document.querySelector("#sky");
-var ctxSky = sky.getContext("2d");
-var mount = document.querySelector("#mountain");
-var ctxMount = mount.getContext("2d");
-var w = Math.round(Math.min(window.innerWidth, window.innerHeight) * 0.85);
-var w2 = w / 2;
+/*
+  Johan Karlsson, 2019
+  https://twitter.com/DonKarlssonSan
+  MIT License, see Details View
+  
+  Similar triangles (side splitting theorem):
+  http://www.malinc.se/math/geometry/similartrianglesen.php
+  https://en.wikipedia.org/wiki/Delaunay_triangulation
+  https://en.wikipedia.org/wiki/Bowyer%E2%80%93Watson_algorithm
+  https://en.wikipedia.org/wiki/Circumscribed_circle
+*/
 
-var scale = 10;
-var offset = 11;
-var river = 0;
+const svgNs = "http://www.w3.org/2000/svg";
+let svg;
+let w = 1650;
+let h = 1170;
 
-var grad = ctxMount.createLinearGradient(0, w2, 0, w);
-grad.addColorStop(0, "#d3d4d8");
-grad.addColorStop(0.33, "#7990b4");
-grad.addColorStop(0.66, "#323d54");
-grad.addColorStop(1, "#282a2e");
-var gradSky = ctxSky.createLinearGradient(0, 0, 0, w);
-gradSky.addColorStop(0, "#2E112D");
-gradSky.addColorStop(0.25, "#540032");
-gradSky.addColorStop(0.5, "#820333");
-gradSky.addColorStop(0.75, "#C9283E");
-gradSky.addColorStop(1, "#F0433A");
-noise.seed(0.2);
-function render(a) {
-  offset = w / scale;
-  ctxMount.lineCap = "round";
-  ctxSky.lineCap = "round";
-  a *= -0.0001;
-
-  ctxSky.clearRect(0, 0, w, w);
-  ctxMount.clearRect(0, 0, w, w);
-
-  var rows = w / scale;
-  ctxSky.save();
-  ctxSky.beginPath();
-
-  ctxMount.save();
-  ctxMount.beginPath();
-  for (var i = offset * -1; i < rows; i++) {
-    river = Math.abs(noise.simplex2(0, i / 30 + a + 100)) * (w / 6) + w / 6;
-    var dist = w / 3 + river;
-
-    ctxSky.moveTo(i * scale + scale * offset * 0.8, 0);
-    ctxSky.lineTo(i * scale + scale * offset, dist);
-    
-    ctxMount.moveTo(i * scale + scale * offset, dist);
-    ctxMount.lineTo(i * scale, w);
+class Triangle {
+  constructor(a, b, c) {
+    this.a = a;
+    this.b = b;
+    this.c = c;
   }
-  ctxSky.stroke();
-  ctxSky.fillStyle = gradSky;
-  ctxSky.rect(0, 0, w, w);
-  ctxSky.globalCompositeOperation = "source-atop";
-  ctxSky.fill();
-  ctxSky.restore();
+  
+  vertexes() {
+    return [this.a, this.b, this.c];
+  }
+  
+  vertexesAsString() {
+    return this.vertexes().map(vertex => `${vertex.x}, ${vertex.y}`).join(", ");
+  }
+  
+  draw(groupElement) {
+    let polygon = document.createElementNS(svgNs, "polygon");
+    polygon.setAttribute("points", this.vertexesAsString());
+    groupElement.appendChild(polygon);
+    
+    // Similar triangles, see link at the top
+    let nrOfPoints = Math.round(Math.random() * 18 + 3);
+    let points1 = this.getPoints(this.c, this.a, nrOfPoints);
+    let points2 = this.getPoints(this.c, this.b, nrOfPoints);
+    for(let i = 0; i < nrOfPoints; i++) {
+      let line = document.createElementNS(svgNs, "line");
+      line.setAttribute("x1", points1[i].x);
+      line.setAttribute("y1", points1[i].y);
+      line.setAttribute("x2", points2[i].x);
+      line.setAttribute("y2", points2[i].y);
+      groupElement.appendChild(line);
+    }
+  }
+  
+  getPoints(p1, p2, nrOfPoints) {
+    let points = [];
+    let delta = p1.sub(p2).div(nrOfPoints+1);
+    for(let i = 1; i < nrOfPoints+1; i++) {
+      let currentPos = p2.add(delta.mult(i));
+      points.push(currentPos);
+    }
+    return points;
+  }
 
-  ctxMount.stroke();
-  ctxMount.strokeStyle = grad;
-  ctxMount.fillStyle = grad;
-  ctxMount.rect(0, w2, w, w);
-  ctxMount.globalCompositeOperation = "source-atop";
-  ctxMount.fill();
-  ctxMount.restore();
-  window.requestAnimationFrame(render);
+  edges() {
+    return [
+      [this.a, this.b],
+      [this.b, this.c],
+      [this.c, this.a]
+    ];
+  }
+  
+  sharesAVertexWith(triangle) {
+    // TODO: optimize me please!
+    for(let i = 0; i < 3; i++) {
+      for(let j = 0; j < 3; j++) {
+        let v = this.vertexes()[i];
+        let vv = triangle.vertexes()[j];
+        if(v.equals(vv)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  hasEdge(edge) {
+    for(let i = 0; i < 3; i++) {
+      let e = this.edges()[i];
+      if(e[0].equals(edge[0]) && e[1].equals(edge[1]) || 
+         e[1].equals(edge[0]) && e[0].equals(edge[1])) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  circumcenter() {
+    let d = 2 * (this.a.x * (this.b.y - this.c.y) + 
+                 this.b.x * (this.c.y - this.a.y) + 
+                 this.c.x * (this.a.y - this.b.y));
+    
+    let x = 1 / d * ((this.a.x * this.a.x + this.a.y * this.a.y) * (this.b.y - this.c.y) + 
+                     (this.b.x * this.b.x + this.b.y * this.b.y) * (this.c.y - this.a.y) + 
+                     (this.c.x * this.c.x + this.c.y * this.c.y) * (this.a.y - this.b.y));
+    
+    let y = 1 / d * ((this.a.x * this.a.x + this.a.y * this.a.y) * (this.c.x - this.b.x) + 
+                     (this.b.x * this.b.x + this.b.y * this.b.y) * (this.a.x - this.c.x) + 
+                     (this.c.x * this.c.x + this.c.y * this.c.y) * (this.b.x - this.a.x));
+    
+    return new Vector(x, y);
+  }
+  
+  circumradius() {
+    return this.circumcenter().sub(this.a).getLength();    
+  }
+  
+  pointIsInsideCircumcircle(point) {
+    let circumcenter = this.circumcenter();
+    let circumradius = circumcenter.sub(this.a).getLength();
+    let dist = point.sub(circumcenter).getLength();
+    return dist < circumradius;
+  }
 }
+
+function getRandomPoints() {
+  let pointList = [];
+  let div = Math.random() * 61800 + 28200;
+  let nrOfPoints = w * h / div;
+  for(let i = 0; i < nrOfPoints; i++) {
+    pointList.push(new Vector(
+      Math.random() * w,
+      Math.random() * h
+    ));
+  }
+  return pointList;
+}
+
+function bowyerWatson (superTriangle, pointList) {
+  // pointList is a set of coordinates defining the 
+  // points to be triangulated
+  let triangulation = [];
+
+  // add super-triangle to triangulation 
+  // must be large enough to completely contain all 
+  // the points in pointList
+  triangulation.push(superTriangle);
+  
+  // add all the points one at a time to the triangulation
+  pointList.forEach(point => {
+    let badTriangles = [];
+    
+    // first find all the triangles that are no 
+    // longer valid due to the insertion
+    triangulation.forEach(triangle => { 
+      if(triangle.pointIsInsideCircumcircle(point)) {
+        badTriangles.push(triangle); 
+      }
+    });
+    let polygon = [];
+    
+    // find the boundary of the polygonal hole
+    badTriangles.forEach(triangle => {
+      triangle.edges().forEach(edge => {
+        let edgeIsShared = false;
+        badTriangles.forEach(otherTriangle => {
+          if(triangle !== otherTriangle &&  otherTriangle.hasEdge(edge)) {
+            edgeIsShared = true;
+          }
+        });
+        if(!edgeIsShared) {
+          //edge is not shared by any other 
+          // triangles in badTriangles
+          polygon.push(edge);
+        }
+      });
+    });
+    
+    // remove them from the data structure
+    badTriangles.forEach(triangle => {
+      let index = triangulation.indexOf(triangle);
+      if (index > -1) {
+        triangulation.splice(index, 1);
+      }
+    });
+    
+    // re-triangulate the polygonal hole
+    polygon.forEach(edge => {
+      //form a triangle from edge to point
+      let newTri = new Triangle(edge[0], edge[1], point);
+      triangulation.push(newTri);
+    });
+  });
+  
+  // done inserting points, now clean up
+  let i = triangulation.length;
+  while(i--) {
+    let triangle = triangulation[i];
+    if(triangle.sharesAVertexWith(superTriangle)) {
+      //remove triangle from triangulation
+      let index = triangulation.indexOf(triangle);
+      if (index > -1) {
+        triangulation.splice(index, 1);
+      }
+    }  
+  }
+  
+  return triangulation;
+}
+
+function setup() {
+  svg = document.querySelector("svg");
+  document.addEventListener("click", draw);
+  document.addEventListener("keydown", onKeyDown);
+  window.addEventListener("resize", onResize);
+  onResize();
+}
+
 function onResize() {
-  w = Math.round(Math.min(window.innerWidth, window.innerHeight) * 0.85);
-  w2 = w / 2;
-  sky.width = w;
-  sky.height = w;
-  mount.width = w;
-  mount.height = w;
-  sky.style.width = w + "px";
-  sky.style.height = w + "px";
-  mount.style.width = w + "px";
-  mount.style.height = w + "px";
-
-  grad = ctxMount.createLinearGradient(0, w2, 0, w);
-  grad.addColorStop(0, "#d3d4d8");
-  grad.addColorStop(0.33, "#7990b4");
-  grad.addColorStop(0.66, "#323d54");
-  grad.addColorStop(1, "#282a2e");
-
-  gradSky = ctxSky.createLinearGradient(0, 0, 0, w);
-  gradSky.addColorStop(0, "#2E112D");
-  gradSky.addColorStop(0.25, "#540032");
-  gradSky.addColorStop(0.5, "#820333");
-  gradSky.addColorStop(0.75, "#C9283E");
-  gradSky.addColorStop(1, "#F0433A");
+  draw();
 }
-onResize();
-window.requestAnimationFrame(render);
-window.addEventListener("resize", onResize);
+
+function onKeyDown (e) {
+  if(e.code === "KeyD") {
+    download();
+  }
+}
+
+function download() {
+  let svgDoc = svg.outerHTML;
+  let filename = "delunay.svg";
+  let element = document.createElement("a");
+  element.setAttribute("href", "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgDoc));
+  element.setAttribute("download", filename);
+  element.style.display = "none";
+  document.body.appendChild(element);
+  element.addEventListener("click", e => e.stopPropagation());
+  element.click();
+  document.body.removeChild(element);
+}
+
+function draw() {
+  let group = document.querySelector("#container");
+  if(group) {
+    group.remove();
+  }
+  group = document.createElementNS(svgNs, "g");
+  group.setAttribute("id", "container");
+  group.setAttribute("fill", "black");
+  group.setAttribute("stroke", "white");
+  group.setAttribute("stroke-linecap", "round");
+  group.setAttribute("stroke-linejoin", "round");
+  
+  let pointList = getRandomPoints();
+  
+  let superTriangle = new Triangle(
+    new Vector(-w * 10, h * 10),
+    new Vector(w * 10, h * 10),
+    new Vector(w / 2, -h * 10)
+  );
+  
+  let triangles = bowyerWatson(superTriangle, pointList);
+  triangles.forEach(t => t.draw(group));
+  
+  let logo = new Logo(w - 70, h - 70);
+  logo.draw(group);
+  
+  svg.appendChild(group);
+}
+
+setup();

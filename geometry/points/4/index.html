@@ -1,89 +1,58 @@
-<!DOCTYPE html>
-<html>
+﻿<html>
   <head>
-    <meta charset="UTF-8">
-    <title>P4: Concentric Circles</title>
-    <script src="../../libraries/p5/p5.min.js" type="text/javascript"></script>
-    <script src="../../libraries/generative-design-library/generative-design-library.js" type="text/javascript"></script>
+    <title>P3: Line-Line Intersection</title>
+    <script src="https://unpkg.com/pts/dist/pts.min.js"></script>
     <style>
-      body, html {
-        background: #000;
-        width: 100%;
-        height: 100%;
-        margin: 0;
-        text-align:center;
-      }
+      body {margin: 0;}
+      div#pt {width:100%; height: 100%; margin: 0;}
     </style>
   </head>
+
+
   <body>
-  <script>
+    <div id="pt"></div>
 
-/**
- * changing circle amount, size and position in a grid
- *
- * MOUSE
- * position x          : circle amount and size
- * position y          : circle position
- * left click          : random position
- *
- */
-'use strict';
+    <script>
 
-var count = 0;
-var tileCountX = 10;
-var tileCountY = 10;
-var tileWidth = 20;
-var tileHeight = 20;
-var colorStep = 20;
-var circleCount = 0;
-var endSize = 0;
-var endOffset = 0;
 
-var actRandomSeed = 0;
+// Source code licensed under Apache License 2.0. 
+// Copyright © 2017 William Ngan. (https://github.com/williamngan/pts)
 
-function setup() {
-  createCanvas(innerHeight, innerHeight);
-  tileWidth = width / tileCountX;
-  tileHeight = height / tileCountY;
-  noFill();
-  stroke(255, 128);
-}
+//// Demo code starts (anonymous function wrapper is optional) ---
 
-function draw() {
-  background(0);
-  randomSeed(actRandomSeed);
-  translate(tileWidth / 2, tileHeight / 2);
+(function() {
+  
+  let run = Pts.quickStart( "#pt", "#000000" );
+  let pts;
 
-  circleCount = mouseX / 180 + 1;
-  endSize = map(mouseX, 0, max(width, mouseX), tileWidth / 2, 0);
-  endOffset = map(mouseY, 0, max(height, mouseY), 0, (tileWidth - endSize) / 2);
+  run( (time, ftime)  => {
 
-  for (var gridY = 0; gridY <= tileCountY; gridY++) {
-    for (var gridX = 0; gridX <= tileCountX; gridX++) {
-      push();
-      translate(tileWidth * gridX, tileHeight * gridY);
-      scale(1, tileHeight / tileWidth);
-
-      var toggle = int(random(0, 4));
-      if (toggle == 0) rotate(-HALF_PI);
-      if (toggle == 1) rotate(0);
-      if (toggle == 2) rotate(HALF_PI);
-      if (toggle == 3) rotate(PI);
-
-      // draw module
-      for (var i = 0; i < circleCount; i++) {
-        var diameter = map(i, 0, circleCount, tileWidth, endSize);
-        var offset = map(i, 0, circleCount, 0, endOffset);
-        ellipse(offset, 0, diameter, diameter);
-      }
-      pop();
+    // create 100 points and sort them by position
+    // would be better to init this in player's `start` function, but we are lazy here.
+    if (!pts) {
+      pts = Create.distributeRandom( space.innerBound, 100 );
+      pts.sort( (a,b) => (a[0]-b[0]) - (a[1]-b[1]) );
     }
-  }
-}
 
-function mousePressed() {
-  actRandomSeed = random(100000);
-}
-</script>
+    // get line segments and check intersections
+    let pairs = pts.segments(2, 2);
+    let hit = new Group( space.center, space.pointer ).op( Line.intersectLine2D );
+    let hitPts = pairs.map( (pa) => hit( pa ) );
+
+    form.strokeOnly("#333").lines( pairs );
+    form.stroke("#ccc").line([space.center, space.pointer]);
+    form.fillOnly("#ddd").points( pts, 2, "circle" );
+    form.fill("#fff").points( hitPts, 5, "circle" );
+
+  });
+
+  //// ----  
+
+  space.bindMouse().bindTouch().play();
+
+})();
+
+
+    </script>
   </body>
 </html>

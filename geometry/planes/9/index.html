@@ -2,16 +2,26 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>P9</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="HandheldFriendly" content="true"><link rel="stylesheet" href="./style.css">
+  <title>P12: Spiral Delaunay</title>
+  <style>
+	body, html {
+	  margin: 0;
+	}
+
+	canvas {
+	  display: block;
+	  cursor: pointer;
+	}
+  </style>
 
 </head>
 <body>
 <!-- partial:index.partial.html -->
-<canvas></canvas>
+<canvas id="canvas" title="Click to generate new pattern"></canvas>
 <!-- partial -->
-  <script  src="./script.js"></script>
+  <script src='simplex.js'></script>
+<script src='vectory.js'></script>
+<script src="./script.js"></script>
 
 </body>
 </html>
