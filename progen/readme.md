@@ -40,6 +40,8 @@ A method of creating data algorithmically as opposed to manually, typically thro
   * [Bravis lattice](https://en.wikipedia.org/wiki/Bravais_lattice)
   * [Agent-based model](https://en.wikipedia.org/wiki/Agent-based_model)
   * [Multi-agent system](https://en.wikipedia.org/wiki/Multi-agent_system)
+  * [Von Neumann Neighborhood](https://en.wikipedia.org/wiki/Von_Neumann_neighborhood)
+  * [Moore Neighborhood](https://en.wikipedia.org/wiki/Moore_neighborhood)
 
 * [Fractal geometry](https://en.wikipedia.org/wiki/Fractal) studies self-similar Euclidean spaces whose fractal dimensions strictly exceed their topological dimension.
 
