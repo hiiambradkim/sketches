@@ -1,8 +1,7 @@
 # Sketchbook
 
-This is a collection of generative doodles I've forked and reworked in 2020 while trying to learn how to Javascript on my own.
-Some entries feature brief summaries or wikipasta notes on the underlying concepts and techniques behind the canvas.
-All entries are based on prior work by others; credits are listed in the readme.md file of each subdirectory.
+This is a collection of generative doodles I've forked and reworked in 2020 while trying to learn how to Javascript on my own. Some entries feature brief summaries or wikipasta notes on the underlying concepts and techniques behind the canvas. All entries are based on prior work by others; credits are listed in the readme.md file of each subdirectory. For details on attribution, please see credits.md. You can also find all of these on [codepen.io/hiiambradkim](https://codepen.io/hiiambradkim).
+
 
 ## 2020
 
